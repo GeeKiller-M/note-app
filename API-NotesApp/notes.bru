@@ -1,0 +1,26 @@
+meta {
+  name: notes
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:3000/notes
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": 1,
+    "title": "Nota de Prueba REST",
+    "content": "COntenido de la noda de prueba REST",
+    "status": "Completed",
+    "tags": [1, 2]
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
