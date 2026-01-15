@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import * as notesService from "./note.service";
+import { parseNotesQuery } from "./note.query";
 
 export const create = async (req: Request, res: Response) => {
   try {
@@ -23,8 +24,11 @@ export const create = async (req: Request, res: Response) => {
 
 export const getAll = async (req: Request, res: Response) => {
   try {
-    const notes = await notesService.getAllNotes();
-    res.status(200).json({ success: true, data: notes });
+    const filters = parseNotesQuery(req.query);
+
+    const result = await notesService.getAllNotes(filters);
+
+    res.status(200).json({ success: true, data: result });
   } catch (error: any) {
     res.status(500).json({ success: false, error: error.message });
   }

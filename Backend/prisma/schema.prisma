@@ -29,15 +29,20 @@ model Notes {
   userId    Int
   title     String   @db.Text
   content   String   @db.Text
-  status    Status
+  status    Status   @default(Pending)
   createdAt DateTime @default(now()) @db.DateTime()
-  updateAt  DateTime @updatedAt @db.DateTime()
+  updatedAt DateTime @updatedAt @db.DateTime()
   tags      Tags[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([userId, status])
 }
 
 model Tags {
   id    Int     @id @default(autoincrement())
-  name  String  @db.VarChar(30)
+  name  String  @unique @db.VarChar(30)
   notes Notes[]
 }
 

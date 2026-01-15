@@ -19,8 +19,12 @@ CREATE TABLE `Notes` (
     `content` TEXT NOT NULL,
     `status` ENUM('Pending', 'InProgress', 'Completed') NOT NULL,
     `createdAt` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `updateAt` DATETIME NOT NULL,
+    `updatedAt` DATETIME NOT NULL,
 
+    INDEX `Notes_userId_idx`(`userId`),
+    INDEX `Notes_status_idx`(`status`),
+    INDEX `Notes_createdAt_idx`(`createdAt`),
+    INDEX `Notes_userId_status_idx`(`userId`, `status`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -29,6 +33,7 @@ CREATE TABLE `Tags` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(30) NOT NULL,
 
+    UNIQUE INDEX `Tags_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

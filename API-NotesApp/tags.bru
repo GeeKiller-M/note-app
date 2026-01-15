@@ -4,12 +4,19 @@ meta {
   seq: 2
 }
 
-get {
-  url: http://localhost:3000/tags
-  body: none
+post {
+  url: http://localhost:3000/api/tags
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+   "name": "Estudio"
+  }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }
