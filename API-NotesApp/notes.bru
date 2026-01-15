@@ -4,17 +4,16 @@ meta {
   seq: 3
 }
 
-post {
-  url: http://localhost:3000/notes
+put {
+  url: http://localhost:3000/notes/3
   body: json
   auth: inherit
 }
 
 body:json {
   {
-    "userId": 1,
     "title": "Nota de Prueba REST",
-    "content": "COntenido de la noda de prueba REST",
+    "content": "COntenido de la noda de prueba REST editada",
     "status": "Completed",
     "tags": [1, 2]
   }
