@@ -1,9 +1,10 @@
 import type { Request, Response } from "express";
 import * as userService from "./user.service";
+import { catchAsync } from "../../utils/catchAsync";
+import { validate } from '../../middleware/validate';
 
-export const create = async (req: Request, res: Response) => {
-  try {
-    const { name, lastName, userName, password } = req.body;
+export const create = catchAsync(async (req: Request, res: Response) => {
+    const { name, lastName, userName, password } = req.validated!.body;
 
     const newUser = await userService.createUser({
       name,
@@ -13,23 +14,15 @@ export const create = async (req: Request, res: Response) => {
     });
 
     res.status(201).json({ success: true, data: newUser });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});
 
-export const getAll = async (req: Request, res: Response) => {
-  try {
+export const getAll = catchAsync(async (req: Request, res: Response) => {
     const users = await userService.getAllUsers();
     res.status(200).json({ success: true, data: users });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});
 
-export const getById = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
+export const getById = catchAsync(async (req: Request, res: Response) => {
+    const id = Number(req.validated?.params.id);
     const user = await userService.getUserById(id);
 
     if (!user) {
@@ -37,15 +30,11 @@ export const getById = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({ success: true, data: user });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});
 
-export const update = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
-    const { name, lastName, userName, password } = req.body;
+export const update = catchAsync(async (req: Request, res: Response) => {
+    const id = Number(req.validated?.params.id);
+    const { name, lastName, userName, password } = req.validated!.body;
 
     const updatedUser = await userService.updateUser(id, {
       name,
@@ -55,19 +44,12 @@ export const update = async (req: Request, res: Response) => {
     });
 
     res.status(200).json({ success: true, data: updatedUser });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});
 
-export const remove = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
+export const remove = catchAsync(async (req: Request, res: Response) => {
+    const id = Number(req.validated!.params.id);
     await userService.deleteUser(id);
     res
       .status(200)
       .json({ success: true, message: "User deleted successfully" });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});

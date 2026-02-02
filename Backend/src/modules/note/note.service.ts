@@ -4,7 +4,7 @@ import { Prisma } from "../../../generated/prisma/client";
 export interface NoteFilters {
   userId: number;
   status?: "Pending" | "InProgress" | "Completed" | undefined;
-  tagName?: string | undefined;
+  tag?: string | undefined;
   search?: string | undefined;
   page?: number | undefined;
   limit?: number | undefined;
@@ -17,7 +17,7 @@ export const createNote = async (data: Prisma.NotesUncheckedCreateInput) => {
 };
 
 export const getAllNotes = async (filters: NoteFilters) => {
-  const { userId, status, tagName, search } = filters;
+  const { userId, status, tag, search } = filters;
   const limit = Number(filters.limit) || 10;
   const page = Number(filters.page) || 1;
   const skip = (page - 1) * limit;
@@ -28,10 +28,10 @@ export const getAllNotes = async (filters: NoteFilters) => {
   };
 
   if (status) where.status = status;
-  if (tagName) {
+  if (tag) {
     where.tags = {
       some: {
-        name: tagName,
+        name: tag,
       },
     };
   }
@@ -50,7 +50,7 @@ export const getAllNotes = async (filters: NoteFilters) => {
     take: take,
     include: {
       user: { select: { userName: true } },
-      tags: { select: { name: true } },
+      tags: { select: { id: true, name: true } },
     },
     orderBy: {
       createdAt: "desc",
@@ -67,11 +67,7 @@ export const getNoteById = async (id: number) => {
           userName: true,
         },
       },
-      tags: {
-        select: {
-          name: true,
-        },
-      },
+tags: { select: { id: true, name: true } },
     },
   });
 };

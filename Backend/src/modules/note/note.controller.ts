@@ -1,10 +1,9 @@
 import type { Request, Response } from "express";
 import * as notesService from "./note.service";
-import { parseNotesQuery } from "./note.query";
+import { catchAsync } from "../../utils/catchAsync";
 
-export const create = async (req: Request, res: Response) => {
-  try {
-    const { userId, title, content, status, tags } = req.body;
+export const create = catchAsync(async (req: Request, res: Response) => {
+    const { userId, title, content, status, tags } = req.validated!.body;
 
     const newNote = await notesService.createNote({
       userId,
@@ -12,66 +11,53 @@ export const create = async (req: Request, res: Response) => {
       content,
       status,
       tags: {
-        connect: tags.map((tagId: number) => ({ id: tagId })),
+        connect: tags??[]
+          .filter((tagId: number | null) => tagId != null)
+          .map((tagId: number) => ({ id: tagId })),
       },
     });
 
     res.status(201).json({ success: true, data: newNote });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});
 
-export const getAll = async (req: Request, res: Response) => {
-  try {
-    const filters = parseNotesQuery(req.query);
+export const getAll = catchAsync(async (req: Request, res: Response) => {
+    const filters = req.validated?.query;
 
     const result = await notesService.getAllNotes(filters);
 
     res.status(200).json({ success: true, data: result });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});
 
-export const getById = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
+export const getById = catchAsync(async (req: Request, res: Response) => {
+    const id = Number(req.validated?.params.id);
     const note = await notesService.getNoteById(id);
-    res.status(200).json({ success: true, data: note });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
 
-export const update = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
-    const { title, content, status, tags } = req.body;
+    res.status(200).json({ success: true, data: note });
+});
+
+export const update = catchAsync(async (req: Request, res: Response) => {
+    const id = Number(req.validated?.params.id);
+    const { title, content, status, tags } = req.validated!.body;
 
     const updatedNote = await notesService.updateNote(id, {
       title,
       content,
       status,
       tags: {
-        set: tags.map((tagId: number) => ({ id: tagId })),
+        set: tags??[]
+          .filter((tagId: number | null) => tagId != null)
+          .map((tagId: number) => ({ id: tagId })),
       },
     });
 
     res.status(200).json({ success: true, data: updatedNote });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});
 
-export const remove = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
+export const remove = catchAsync(async (req: Request, res: Response) => {
+    const id = Number(req.validated?.params.id);
     await notesService.deleteNote(id);
     res
       .status(200)
       .json({ success: true, message: "Note deleted successfully" });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+
+});

@@ -1,32 +1,25 @@
 import type { Request, Response } from "express";
 import * as tagService from "./tag.service";
+import { catchAsync } from "../../utils/catchAsync";
 
-export const create = async (req: Request, res: Response) => {
-  try {
-    const { name } = req.body;
+export const create = catchAsync(async (req: Request, res: Response) => {
+    const { name } = req.validated!.body;
 
     const newTag = await tagService.createTag({
       name,
     });
 
     res.status(201).json({ success: true, data: newTag });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});
 
-export const getAll = async (req: Request, res: Response) => {
-  try {
+export const getAll = catchAsync(async (req: Request, res: Response) => {
     const tag = await tagService.getAllTags();
-    res.status(200).json({ success: true, data: tag });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
 
-export const getById = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
+    res.status(200).json({ success: true, data: tag });
+});
+
+export const getById = catchAsync(async (req: Request, res: Response) => {
+    const id = Number(req.validated?.params.id);
     const tag = await tagService.getTagById(id);
 
     if (!tag) {
@@ -34,22 +27,15 @@ export const getById = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({ success: true, data: tag });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});
 
-export const update = async (req: Request, res: Response) => {
-  try {
-    const id = Number(req.params.id);
-    const { name } = req.body;
+export const update = catchAsync(async (req: Request, res: Response) => {
+    const id = Number(req.validated?.params.id);
+    const { name } = req.validated!.body;
 
     const updatedTag = await tagService.updateTag(id, {
       name,
     });
 
     res.status(200).json({ success: true, data: updatedTag });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-};
+});

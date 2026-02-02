@@ -1,5 +1,14 @@
-node_modules
-# Keep environment variables out of version control
-.env
+node_modules/
 
-/generated/prisma
+# Environment variables
+.env
+.env.*
+
+# Build output
+dist/
+
+# Prisma generated client
+generated/prisma/
+
+# Prisma engines cache
+.prisma/

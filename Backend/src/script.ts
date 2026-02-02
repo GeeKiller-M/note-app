@@ -1,32 +1,6 @@
 import { prisma } from "./lib/prisma";
 
 async function main() {
-  // const user = await prisma.user.create({
-  //   data: {
-  //     name: "jhosue",
-  //     lastName: "tipe",
-  //     userName: "Geek1",
-  //     password: "Jhosue24",
-  //     notes: {
-  //       create: {
-  //         title: "Primera nota",
-  //         content: "Contenido de la nota",
-  //         status: "Pending",
-  //       },
-  //     },
-  //   },
-  //   include: {
-  //     notes: true,
-  //   },
-  // });
-  // console.log("Create user:", user);
-
-  // const allUsers = await prisma.user.findMany({
-  //   include: {
-  //     notes: true,
-  //   },
-  // });
-  // console.log("All users:", JSON.stringify(allUsers, null, 2));
   const user = await prisma.user.upsert({
     where: { userName: "Geek" },
     update: {},
